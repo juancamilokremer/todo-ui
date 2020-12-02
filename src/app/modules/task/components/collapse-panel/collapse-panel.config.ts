@@ -8,3 +8,8 @@ export interface ItemList {
     id: number;
     description: string;
 }
+
+export interface ActionPanel {
+    action: 'edit' | 'delete';
+    data: CollapsePanelConfig;
+}

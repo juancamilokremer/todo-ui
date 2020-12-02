@@ -3,16 +3,19 @@
         <nz-collapse-panel id="config.id" 
             [nzHeader]="config.title" 
             [nzActive]="false"
-            [nzExtra]="actionsTpl">
-            <div class="items-list">
-                <div *ngFor="let item of config.items">
-                    <label id="item.id" nz-checkbox>{{item.description}}</label>
+            [nzExtra]="actionsTpl"
+            (nzActiveChange)="onActiveChange($event)">
+            <nz-spin nzTip="Loading..." [nzSpinning]="isLoading">
+                <div class="items-list">
+                    <div *ngFor="let item of config.items">
+                        <label id="item.id" nz-checkbox>{{item.description}}</label>
+                    </div>
+    
+                    <button nz-button nzType="link" (click)="onAddItemAction()">
+                        <i nz-icon nzType="plus"></i> Add Item
+                    </button>
                 </div>
-
-                <button nz-button nzType="link" (click)="onAddItemAction()">
-                    <i nz-icon nzType="plus"></i> Add Item
-                </button>
-            </div>
+            </nz-spin>
         </nz-collapse-panel>
     </nz-collapse>
 
@@ -27,4 +30,8 @@
     </ng-template>
 </div>
 
-<app-modal-form #appModalForm></app-modal-form>
+<app-modal-form #appModalForm
+    [labelName]="labelNameForm"
+    [formData]="formData"
+    (eventFormAction)="onEventFormAction($event)">
+</app-modal-form>

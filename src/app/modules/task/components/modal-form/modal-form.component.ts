@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActionPanel } from '../collapse-panel/collapse-panel.config';
 import { ModalFormData } from './modal-form.config';
 
 @Component({
@@ -26,7 +27,7 @@ export class ModalFormComponent implements OnInit {
 
     private initFormControl() {
         this.validateForm = new FormGroup({
-            name: new FormControl(this.formData, Validators.required)
+            name: new FormControl('', Validators.required)
         });
 
         this.validateForm.statusChanges.subscribe(status => {
@@ -36,6 +37,8 @@ export class ModalFormComponent implements OnInit {
     }
 
     showModal(): void {
+        console.log("data from modal: ", this.formData);
+        this.validateForm.controls.name.setValue(this.formData ? this.formData.name : '');
         this.isVisible = true;
     }
 
@@ -46,9 +49,10 @@ export class ModalFormComponent implements OnInit {
             } else {
                 this.formData = {name : this.validateForm.controls.name.value};
             }
-            console.log(this.validateForm.controls.name.value);
+            console.log(this.formData);
             this.eventFormAction.emit(this.formData);
             this.validateForm.controls.name.reset();
+            this.formData = null;
             this.isVisible = false;
         } 
     }
