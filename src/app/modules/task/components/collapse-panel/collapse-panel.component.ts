@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { TaskItemService } from '../../services/task-item.service';
 import { TaskService } from '../../services/task.service';
+import { TaskItemPayload } from '../../types/todo.config';
 import { ModalFormComponent } from '../modal-form/modal-form.component';
 import { ModalFormData } from '../modal-form/modal-form.config';
-import { ActionPanel, CollapsePanelConfig } from './collapse-panel.config';
+import { ActionPanel, CollapsePanelConfig, Item } from './collapse-panel.config';
 
 @Component({
     selector: 'app-collapse-panel',
@@ -19,10 +21,42 @@ export class CollapsePanelComponent implements OnInit {
     isLoading: boolean = false;
     labelNameForm: string;
     formData: ModalFormData;
+    isModalVisible: boolean = false;
 
-    constructor(protected taskService: TaskService) { }
+    constructor(protected taskService: TaskService,
+                protected taskItemService: TaskItemService) { }
 
     ngOnInit(): void {
+    }
+
+    private loadItems() {
+        this.config.items = [];
+        this.taskService.getAllTaskItems(this.config.id).subscribe(items => {
+            items.map(item => {
+                this.config.items.push({
+                    id: item.id,
+                    description: item.name,
+                    isChecked: item.finish
+                })
+            });
+            this.isLoading = false;
+        }, error => {
+            console.error(error);
+            this.isLoading = false;
+        });
+    }
+
+    private addTaskItem(id: number, payload: TaskItemPayload) {
+        this.taskService.addTaskItems(id, payload).subscribe(() => {
+            this.loadItems();
+        }, error => {
+            console.error(error);
+        });
+    }
+
+    private changeStatusItem(itemId: number, taskItemPayload: TaskItemPayload) {
+        this.taskItemService.changeStatusTaskItem(itemId, taskItemPayload)
+            .subscribe(() => this.isLoading = false, error => console.error(error));
     }
 
     onMenuDropDownAction(action: string) {
@@ -37,38 +71,39 @@ export class CollapsePanelComponent implements OnInit {
     onAddItemAction() {
         console.log(" add item");
         this.labelNameForm = "Add new Item";
-        this.appModalForm.showModal();
+        this.isModalVisible = true;
     }
 
     onActiveChange(status: boolean) {
         if(status) {
             this.isLoading = true;
-            this.config.items = [];
-            this.taskService.getAllTaskItems(this.config.id).subscribe(items => {
-                items.map(item => {
-                    this.config.items.push({
-                        id: item.id,
-                        description: item.name
-                    })
-                });
-                this.isLoading = false;
-            }, error => {
-                console.error(error);
-                this.isLoading = false;
-            });
+            this.loadItems();
         }
     }
 
     onEventFormAction(formData: ModalFormData) {
+        this.isModalVisible = false;
         if(formData) {
             this.isLoading = true;
-            let taskPayload = { name: formData.name };
+            let payload: TaskItemPayload = { name: formData.name };
 
-            // if(!formData.id) {
-            //     this.createTask(taskPayload);
-            // } else {
-            //     this.editTask(formData.id, taskPayload);
-            // }
+            if(!formData.id) {
+                this.addTaskItem(this.config.id, payload);
+            } else {
+                // this.editTaskItem(formData.id, payload);
+            }
         }
+    }
+
+    onEventCloseFormAction() {
+        this.isModalVisible = false;
+    }
+
+    onCheckboxChange(status: boolean, item: Item) {
+        this.isLoading = true;
+        let taskItemPayload: TaskItemPayload = {
+            finish: status
+        }
+        this.changeStatusItem(item.id, taskItemPayload);
     }
 }

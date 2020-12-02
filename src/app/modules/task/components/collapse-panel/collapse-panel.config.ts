@@ -1,12 +1,13 @@
 export interface CollapsePanelConfig {
     id: number;
     title: string;
-    items?: ItemList[];
+    items?: Item[];
 }
 
-export interface ItemList {
+export interface Item {
     id: number;
     description: string;
+    isChecked: boolean;
 }
 
 export interface ActionPanel {

@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActionPanel } from '../collapse-panel/collapse-panel.config';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalFormData } from './modal-form.config';
 
 @Component({
@@ -13,6 +12,7 @@ export class ModalFormComponent implements OnInit {
     @Input() formData: ModalFormData;
 
     @Output() eventFormAction: EventEmitter<ModalFormData> = new EventEmitter();
+    @Output() eventCloseFormAction: EventEmitter<void> = new EventEmitter();
 
     isVisible = false;
     disabledOkButton: boolean = true;
@@ -23,6 +23,7 @@ export class ModalFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.initFormControl();
+        this.showModal();
     }
 
     private initFormControl() {
@@ -51,13 +52,12 @@ export class ModalFormComponent implements OnInit {
             }
             console.log(this.formData);
             this.eventFormAction.emit(this.formData);
-            this.validateForm.controls.name.reset();
-            this.formData = null;
             this.isVisible = false;
         } 
     }
 
     handleCancel(): void {
+        this.eventCloseFormAction.emit();
         this.isVisible = false;
     }
 }

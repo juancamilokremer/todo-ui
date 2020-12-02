@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppHttpClient } from 'src/app/app-http-client';
-import { Task, TaskPayload } from '../types/todo.config';
+import { Item, Task, TaskItemPayload, TaskPayload } from '../types/todo.config';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +21,7 @@ export class TaskItemService extends AppHttpClient {
     //     return super.post("/tasks", taskPayload);
     // }
 
-    // update(id: number, taskPayload: TaskPayload): Observable<Task> {
-    //     return super.put("/tasks/" + id, taskPayload);
-    // }
+    changeStatusTaskItem(itemId: number, taskItemPayload: TaskItemPayload): Observable<Item> {
+        return super.put("/taskItems/" + itemId + "/changeStatus", taskItemPayload);
+    }
 }

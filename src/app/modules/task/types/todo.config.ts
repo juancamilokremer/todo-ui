@@ -13,3 +13,8 @@ export interface Item {
 export interface TaskPayload {
     name: string;
 }
+
+export interface TaskItemPayload {
+    name?: string;
+    finish?: boolean;
+}

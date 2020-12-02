@@ -1,8 +1,6 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { NzButtonSize } from 'ng-zorro-antd/button';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ActionPanel, CollapsePanelConfig } from './components/collapse-panel/collapse-panel.config';
-import { ModalFormComponent } from './components/modal-form/modal-form.component';
 import { ModalFormData } from './components/modal-form/modal-form.config';
 import { TaskService } from './services/task.service';
 import { TaskPayload } from './types/todo.config';
@@ -12,22 +10,19 @@ import { TaskPayload } from './types/todo.config';
     templateUrl: './task.component.html',
     styleUrls: ['./task.component.scss']
 })
-export class TaskComponent implements AfterViewInit{
+export class TaskComponent implements OnInit{
     isLoading: boolean = true;
+    isModalVisible: boolean = false;
     labelName: string;
     formData: ModalFormData;
     title: string = "TO-DO List";
     tasks: CollapsePanelConfig [];
 
-    @ViewChild("appModalForm", {static: false}) private appModalForm: ModalFormComponent;
-
     constructor(protected modalService: NzModalService,
-                protected taskService: TaskService) {
+                protected taskService: TaskService) {   }
+
+    ngOnInit(): void {
         this.loadTasks();
-    }
-    
-    ngAfterViewInit(): void {
-        this.appModalForm.formData = this.formData;
     }
 
     async loadTasks() {
@@ -79,26 +74,27 @@ export class TaskComponent implements AfterViewInit{
 
     onOpenAddTaskPanel() {
         this.labelName = "Add new To-Do";
-        this.appModalForm.formData = null;
-        this.appModalForm.showModal();
+        this.formData = null;
+        this.isModalVisible = true;
     }
 
     onEventPanelAction(actionPanel: ActionPanel) {
         console.log(actionPanel);
         if(actionPanel.action === 'edit') {
             this.labelName = "Edit To-Do name";
-            this.appModalForm.formData = {
+            this.formData = {
                 id: actionPanel.data.id,
                 name: actionPanel.data.title,
             };
-            console.log(this.formData);
-            this.appModalForm.showModal();
+            
+            this.isModalVisible = true;
         } else if (actionPanel.action === 'delete') {
             this.confirmationDeleteTask(actionPanel.data.id);
         }
     }
 
     onEventFormAction(formData: ModalFormData) {
+        this.isModalVisible = false;
         if(formData) {
             this.isLoading = true;
             let taskPayload = { name: formData.name };
@@ -109,5 +105,9 @@ export class TaskComponent implements AfterViewInit{
                 this.editTask(formData.id, taskPayload);
             }
         }
+    }
+
+    onEventCloseFormAction() {
+        this.isModalVisible = false;
     }
 }

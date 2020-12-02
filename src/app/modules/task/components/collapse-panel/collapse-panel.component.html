@@ -8,7 +8,7 @@
             <nz-spin nzTip="Loading..." [nzSpinning]="isLoading">
                 <div class="items-list">
                     <div *ngFor="let item of config.items">
-                        <label id="item.id" nz-checkbox>{{item.description}}</label>
+                        <label nz-checkbox id="item.id" [ngModel]="item.isChecked" (ngModelChange)="onCheckboxChange($event, item)" >{{item.description}}</label>
                     </div>
     
                     <button nz-button nzType="link" (click)="onAddItemAction()">
@@ -30,8 +30,9 @@
     </ng-template>
 </div>
 
-<app-modal-form #appModalForm
+<app-modal-form *ngIf="isModalVisible"
     [labelName]="labelNameForm"
     [formData]="formData"
+    (eventCloseFormAction)="onEventCloseFormAction()"
     (eventFormAction)="onEventFormAction($event)">
 </app-modal-form>

@@ -26,8 +26,9 @@
     </nz-spin>
 </div>
 
-<app-modal-form #appModalForm 
+<app-modal-form *ngIf="isModalVisible"
     [labelName]="labelName"
     [formData]="formData"
+    (eventCloseFormAction)="onEventCloseFormAction()"
     (eventFormAction)="onEventFormAction($event)">
 </app-modal-form>
