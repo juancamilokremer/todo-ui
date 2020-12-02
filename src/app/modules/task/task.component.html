@@ -1,27 +1,36 @@
 <div class="task">
     <nz-spin nzTip="Loading..." [nzSpinning]="isLoading">
-        <nz-space nzSize="middle">
-            <nz-space-item>
-                <h1 class="title-task">{{title}}</h1>
-            </nz-space-item>
-            <nz-space-item>
-                <button nz-button nz-tooltip
-                    nzType="primary" 
-                    nzSize="large" 
-                    nzShape="circle"
-                    nzTooltipTitle="Create a new To-Do"
-                    nzTooltipPlacement="right" 
-                    (click)="onOpenAddTaskPanel()">
-                    <i nz-icon nzType="plus"></i>
-                </button>
-            </nz-space-item>
-        </nz-space>
-
-        <div *ngFor="let task of tasks">
-            <app-collapse-panel 
-                [config]="task"
-                (eventPanelAction)="onEventPanelAction($event)">
-            </app-collapse-panel>
+        <div>
+            <nz-space nzSize="middle">
+                <nz-space-item>
+                    <h1 class="title-task">{{title}}</h1>
+                </nz-space-item>
+                <nz-space-item>
+                    <button nz-button nz-tooltip
+                        nzType="primary" 
+                        nzSize="large" 
+                        nzShape="circle"
+                        nzTooltipTitle="Create a new To-Do"
+                        nzTooltipPlacement="right" 
+                        (click)="onOpenAddTaskPanel()">
+                        <i nz-icon nzType="plus"></i>
+                    </button>
+                </nz-space-item>
+            </nz-space>
+            <div *ngIf="!tasks || tasks.length === 0" >
+                <nz-result nzStatus="404" nzTitle="Empty list" nzSubTitle="There is no To-Do list to display yet">
+                    <div nz-result-extra>
+                      <button nz-button nzType="primary" (click)="onOpenAddTaskPanel()">Add To-Do</button>
+                    </div>
+                </nz-result>
+            </div>
+            
+            <div *ngFor="let task of tasks">
+                <app-collapse-panel 
+                    [config]="task"
+                    (eventPanelAction)="onEventPanelAction($event)">
+                </app-collapse-panel>
+            </div>
         </div>
     </nz-spin>
 </div>

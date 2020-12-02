@@ -13,6 +13,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 import { TaskComponent } from './task.component';
 import { CommonModule } from '@angular/common';
@@ -38,6 +39,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NzFormModule,
     NzInputModule,
     NzSpinModule,
+    NzResultModule,
   ],
   declarations: [
     TaskComponent,
