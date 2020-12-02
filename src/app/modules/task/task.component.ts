@@ -3,7 +3,9 @@ import { NzButtonSize } from 'ng-zorro-antd/button';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CollapsePanelConfig } from './components/collapse-panel/collapse-panel.config';
 import { ModalFormComponent } from './components/modal-form/modal-form.component';
+import { ModalFormData } from './components/modal-form/modal-form.config';
 import { TaskService } from './services/task.service';
+import { TaskPayload } from './types/todo.config';
 
 @Component({
     selector: 'app-task',
@@ -11,6 +13,7 @@ import { TaskService } from './services/task.service';
     styleUrls: ['./task.component.scss']
 })
 export class TaskComponent {
+    isLoading: boolean = true;
     labelName: string;
     title: string = "TO-DO List";
     tasks: CollapsePanelConfig [];
@@ -32,6 +35,7 @@ export class TaskComponent {
                 });
             })
         });
+        this.isLoading = false;
     }
 
     private confirmationDeleteTask(id: string) {
@@ -47,7 +51,15 @@ export class TaskComponent {
         //call service.
     }
 
-    onAddTaskAction() {
+    private async createTask(taskPayload: TaskPayload) {
+        this.taskService.create(taskPayload).subscribe(task => {
+            this.loadTasks();
+        }, error => {
+            console.error(error);
+        });
+    }
+
+    onOpenAddTaskPanel() {
         this.labelName = "Add new To-Do";
         this.appModalForm.showModal();
     }
@@ -58,6 +70,18 @@ export class TaskComponent {
             this.appModalForm.showModal();
         } else if (action === 'delete') {
             this.confirmationDeleteTask("1");
+        }
+    }
+
+    onEventFormAction(formData: ModalFormData) {
+        if(formData && !formData.id) {
+            this.isLoading = true;
+            let taskPayload = {
+                name: formData.name
+            }
+            this.createTask(taskPayload);
+        } else {
+            // it's edit.
         }
     }
 }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ModalFormData } from './modal-form.config';
 
 @Component({
     selector: 'app-modal-form',
@@ -8,9 +9,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class ModalFormComponent implements OnInit {
     @Input() labelName: string;
-    @Input() todoName: string;
+    @Input() formData: ModalFormData;
 
-    @Output() eventFormAction: EventEmitter<string> = new EventEmitter();
+    @Output() eventFormAction: EventEmitter<ModalFormData> = new EventEmitter();
 
     isVisible = false;
     disabledOkButton: boolean = true;
@@ -25,7 +26,7 @@ export class ModalFormComponent implements OnInit {
 
     private initFormControl() {
         this.validateForm = new FormGroup({
-            name: new FormControl(this.todoName, Validators.required)
+            name: new FormControl(this.formData, Validators.required)
         });
 
         this.validateForm.statusChanges.subscribe(status => {
@@ -40,9 +41,14 @@ export class ModalFormComponent implements OnInit {
 
     handleOk(): void {
         if(this.isValidForm) {
+            if (this.formData) {
+                this.formData.name = this.validateForm.controls.name.value;
+            } else {
+                this.formData = {name : this.validateForm.controls.name.value};
+            }
             console.log(this.validateForm.controls.name.value);
-            this.eventFormAction.emit(this.validateForm.controls.name.value);
-            this.validateForm.controls.name.setValue("");
+            this.eventFormAction.emit(this.formData);
+            this.validateForm.controls.name.reset();
             this.isVisible = false;
         } 
     }

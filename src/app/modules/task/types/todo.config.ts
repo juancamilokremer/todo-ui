@@ -9,3 +9,7 @@ export interface Item {
     name: string;
     finish: boolean;
 }
+
+export interface TaskPayload {
+    name: string;
+}
