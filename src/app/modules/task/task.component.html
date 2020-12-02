@@ -1,0 +1,27 @@
+<div class="task">
+    <nz-space nzSize="middle">
+        <nz-space-item>
+            <h1 class="title-task">{{title}}</h1>
+        </nz-space-item>
+        <nz-space-item>
+            <button nz-button nz-tooltip
+                nzType="primary" 
+                nzSize="large" 
+                nzShape="circle"
+                nzTooltipTitle="Create a new To-Do"
+                nzTooltipPlacement="right" 
+                (click)="onAddTaskAction()">
+                <i nz-icon nzType="plus"></i>
+            </button>
+        </nz-space-item>
+    </nz-space>
+
+    <div *ngFor="let task of tasks">
+        <app-collapse-panel 
+            [config]="task"
+            (eventPanelAction)="onEventPanelAction($event)">
+        </app-collapse-panel>
+    </div>
+</div>
+
+<app-modal-form #appModalForm labelName="Add new To-Do"></app-modal-form>

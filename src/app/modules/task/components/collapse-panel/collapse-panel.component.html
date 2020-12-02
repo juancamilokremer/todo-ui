@@ -1,0 +1,30 @@
+<div class="collapse-panel">
+    <nz-collapse>
+        <nz-collapse-panel id="config.id" 
+            [nzHeader]="config.title" 
+            [nzActive]="false"
+            [nzExtra]="actionsTpl">
+            <div class="items-list">
+                <div *ngFor="let item of config.items">
+                    <label id="item.id" nz-checkbox>{{item.description}}</label>
+                </div>
+
+                <button nz-button nzType="link" (click)="onAddItemAction()">
+                    <i nz-icon nzType="plus"></i> Add Item
+                </button>
+            </div>
+        </nz-collapse-panel>
+    </nz-collapse>
+
+    <ng-template #actionsTpl>
+        <i nz-icon nzType="setting" nz-dropdown [nzDropdownMenu]="menu" (click)="$event.stopPropagation()"></i>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="onMenuDropDownAction('edit')"><i nz-icon nzType="edit"></i> Edit To-Do</li>
+              <li nz-menu-item (click)="onMenuDropDownAction('delete')"><i nz-icon nzType="delete"></i> Delete To-Do</li>
+            </ul>
+        </nz-dropdown-menu>
+    </ng-template>
+</div>
+
+<app-modal-form #appModalForm></app-modal-form>

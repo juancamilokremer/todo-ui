@@ -1,0 +1,15 @@
+<div>
+    <nz-modal [(nzVisible)]="isVisible" nzClosable="false" [nzOkDisabled]="disabledOkButton"
+        (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+        <ng-container *nzModalContent>
+            <form nz-form nzLayout="vertical" [formGroup]="validateForm" (ngSubmit)="handleOk()">
+                <nz-form-item>
+                    <nz-form-label >{{labelName}}</nz-form-label>
+                    <nz-form-control nzErrorTip="Please add name of To-Do">
+                        <input nz-input formControlName="name" placeholder="To-Do name" />
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
