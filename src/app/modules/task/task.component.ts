@@ -3,6 +3,7 @@ import { NzButtonSize } from 'ng-zorro-antd/button';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CollapsePanelConfig } from './components/collapse-panel/collapse-panel.config';
 import { ModalFormComponent } from './components/modal-form/modal-form.component';
+import { TaskService } from './services/task.service';
 
 @Component({
     selector: 'app-task',
@@ -10,35 +11,32 @@ import { ModalFormComponent } from './components/modal-form/modal-form.component
     styleUrls: ['./task.component.scss']
 })
 export class TaskComponent {
+    labelName: string;
     title: string = "TO-DO List";
-    tasks: CollapsePanelConfig[];
+    tasks: CollapsePanelConfig [];
 
     @ViewChild("appModalForm") private appModalForm: ModalFormComponent;
 
-    constructor(protected modalService: NzModalService) {
-        this.tasks = [
-            {
-                id: "1",
-                title: 'Mercado',
-                items: [
-                    {id: "1", description: 'Jabón'},
-                    {id: "2", description: 'Servilletas'}
-                ]
-            },
-            {
-                id: "2",
-                title: 'Tareas trabajo',
-                items: [
-                    {id: "3", description: 'Terminar aplicación'},
-                    {id: "4", description: 'Hacer lo del ser'}
-                ]
-            }
-        ];
+    constructor(protected modalService: NzModalService,
+                protected taskService: TaskService) {
+        this.loadTasks();
+    }
+
+    async loadTasks() {
+        this.tasks = [];
+        await this.taskService.getAll().toPromise().then(tasks => {
+            tasks.map(task => {
+                this.tasks.push({
+                    id: task.id,
+                    title: task.name
+                });
+            })
+        });
     }
 
     private confirmationDeleteTask(id: string) {
         this.modalService.confirm({
-            nzTitle: 'Are you sure want delete the To-Do List',
+            nzTitle: 'Are you sure want to delete the To-Do List?',
             nzOkType: 'danger',
             nzOnOk: () => this.deleteTask(id),
         });
@@ -50,13 +48,13 @@ export class TaskComponent {
     }
 
     onAddTaskAction() {
-        console.log("Add task");
+        this.labelName = "Add new To-Do";
         this.appModalForm.showModal();
     }
 
     onEventPanelAction(action: string) {
-        console.log(action);
         if(action === 'edit') {
+            this.labelName = "Edit To-Do name";
             this.appModalForm.showModal();
         } else if (action === 'delete') {
             this.confirmationDeleteTask("1");

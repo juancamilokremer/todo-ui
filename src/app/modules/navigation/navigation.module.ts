@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { NavigationComponent } from './navigation.component';
 import { CommonModule } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { TaskService } from '../task/services/task.service';
 
 
 @NgModule({
@@ -20,6 +21,8 @@ import { NzModalService } from 'ng-zorro-antd/modal';
   ],
   declarations: [NavigationComponent],
   exports: [NavigationComponent],
-  providers: [NzModalService]
+  providers: [
+    NzModalService,
+  ]
 })
 export class NavigationModule { }

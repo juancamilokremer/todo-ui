@@ -1,10 +1,10 @@
 export interface CollapsePanelConfig {
-    id: string;
+    id: number;
     title: string;
     items?: ItemList[];
 }
 
 export interface ItemList {
-    id: string;
+    id: number;
     description: string;
 }
