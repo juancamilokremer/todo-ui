@@ -18,11 +18,11 @@ export class TaskService extends AppHttpClient {
     }
 
     getAllTaskItems(id: number): Observable<Item[]> {
-        return super.get("/tasks/" + id + "/items");
+        return super.get(`/tasks/${id}/items`);
     }
 
     addTaskItems(id: number, payload: TaskItemPayload): Observable<Item> {
-        return super.post("/tasks/" + id + "/items", payload);
+        return super.post(`/tasks/${id}/items`, payload);
     }
 
     create(taskPayload: TaskPayload): Observable<Task> {
@@ -30,10 +30,10 @@ export class TaskService extends AppHttpClient {
     }
 
     update(id: number, taskPayload: TaskPayload): Observable<Task> {
-        return super.put("/tasks/" + id, taskPayload);
+        return super.put(`/tasks/${id}`, taskPayload);
     }
 
     deleteTask(id: number): Observable<any>{
-        return super.delete("/tasks/" + id);
+        return super.delete(`/tasks/${id}`);
     }
 }

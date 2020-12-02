@@ -3,14 +3,23 @@
         <nz-collapse-panel id="config.id" 
             [nzHeader]="config.title" 
             [nzActive]="false"
-            [nzExtra]="actionsTpl"
+            [nzExtra]="actionsTaskTpl"
             (nzActiveChange)="onActiveChange($event)">
             <nz-spin nzTip="Loading..." [nzSpinning]="isLoading">
                 <div class="items-list">
                     <div *ngFor="let item of config.items">
                         <label nz-checkbox id="item.id" [ngModel]="item.isChecked" (ngModelChange)="onCheckboxChange($event, item)" >{{item.description}}</label>
+                        <span>
+                            <i nz-icon class="setting-icon" nzType="setting" nz-dropdown [nzDropdownMenu]="menu" (click)="$event.stopPropagation()"></i>
+                            <nz-dropdown-menu #menu="nzDropdownMenu">
+                                <ul nz-menu>
+                                    <li nz-menu-item (click)="onMenuDropDownItemAction('edit', item)"><i nz-icon nzType="edit"></i> Edit Item</li>
+                                    <li nz-menu-item (click)="onMenuDropDownItemAction('delete', item)"><i nz-icon nzType="delete"></i> Delete Item</li>
+                                </ul>
+                            </nz-dropdown-menu>
+                        </span>
                     </div>
-    
+                    
                     <button nz-button nzType="link" (click)="onAddItemAction()">
                         <i nz-icon nzType="plus"></i> Add Item
                     </button>
@@ -19,12 +28,12 @@
         </nz-collapse-panel>
     </nz-collapse>
 
-    <ng-template #actionsTpl>
-        <i nz-icon nzType="setting" nz-dropdown [nzDropdownMenu]="menu" (click)="$event.stopPropagation()"></i>
+    <ng-template #actionsTaskTpl>
+        <i nz-icon nzType="more" nz-dropdown [nzDropdownMenu]="menu" (click)="$event.stopPropagation()"></i>
         <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="onMenuDropDownAction('edit')"><i nz-icon nzType="edit"></i> Edit To-Do</li>
-              <li nz-menu-item (click)="onMenuDropDownAction('delete')"><i nz-icon nzType="delete"></i> Delete To-Do</li>
+              <li nz-menu-item (click)="onMenuDropDownTaskAction('edit')"><i nz-icon nzType="edit"></i> Edit To-Do</li>
+              <li nz-menu-item (click)="onMenuDropDownTaskAction('delete')"><i nz-icon nzType="delete"></i> Delete To-Do</li>
             </ul>
         </nz-dropdown-menu>
     </ng-template>

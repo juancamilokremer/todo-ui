@@ -13,15 +13,15 @@ export class TaskItemService extends AppHttpClient {
         super(httpClient, 'todoApi', 'todo');
     }
 
-    // getAll(): Observable<Task[]> {
-    //     return super.get("/tasks");
-    // }
-
-    // create(taskPayload: TaskPayload): Observable<Task> {
-    //     return super.post("/tasks", taskPayload);
-    // }
-
     changeStatusTaskItem(itemId: number, taskItemPayload: TaskItemPayload): Observable<Item> {
-        return super.put("/taskItems/" + itemId + "/changeStatus", taskItemPayload);
+        return super.put(`/taskItems/${itemId}/changeStatus`, taskItemPayload);
+    }
+
+    updateTaskItemName(itemId: number, taskItemPayload: TaskItemPayload): Observable<Item> {
+        return super.put(`/taskItems/${itemId}`, taskItemPayload);
+    }
+
+    deleteItem(itemId: number): Observable<any> {
+        return super.delete(`/taskItems/${itemId}`);
     }
 }

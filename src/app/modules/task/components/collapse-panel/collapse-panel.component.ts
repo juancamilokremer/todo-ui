@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { TaskItemService } from '../../services/task-item.service';
 import { TaskService } from '../../services/task.service';
 import { TaskItemPayload } from '../../types/todo.config';
@@ -24,7 +25,8 @@ export class CollapsePanelComponent implements OnInit {
     isModalVisible: boolean = false;
 
     constructor(protected taskService: TaskService,
-                protected taskItemService: TaskItemService) { }
+                protected taskItemService: TaskItemService,
+                protected modalService: NzModalService) { }
 
     ngOnInit(): void {
     }
@@ -54,18 +56,59 @@ export class CollapsePanelComponent implements OnInit {
         });
     }
 
+    private editItemName(id: number, payload: TaskItemPayload) {
+        this.taskItemService.updateTaskItemName(id, payload).subscribe(() => {
+            this.loadItems();
+        }, error => {
+            console.error(error);
+        });
+    }
+
     private changeStatusItem(itemId: number, taskItemPayload: TaskItemPayload) {
         this.taskItemService.changeStatusTaskItem(itemId, taskItemPayload)
             .subscribe(() => this.isLoading = false, error => console.error(error));
     }
 
-    onMenuDropDownAction(action: string) {
+    private deleteItem(id: number){
+        this.taskItemService.deleteItem(id).subscribe(() => {
+            this.loadItems();
+        }, error => {
+            console.error(error);
+        });
+    }
+
+    private confirmationDeleteItem(item: Item) {
+        this.modalService.confirm({
+            nzTitle: `Are you sure want to delete the Item ${item.description}?`,
+            nzOkType: 'danger',
+            nzCancelText: 'No',
+            nzOkText: 'Yes',
+            nzOnOk: () => this.deleteItem(item.id),
+        });
+    }
+
+    onMenuDropDownTaskAction(action: string) {
         console.log(this.config);
         let actionPanel: ActionPanel = {
             action: action === 'edit' ? 'edit' : 'delete',
             data: this.config
         }
         this.eventPanelAction.emit(actionPanel);
+    }
+
+    onMenuDropDownItemAction(action: string, item: Item) {
+        console.log(this.config);
+        if(action === 'edit') {
+            this.labelNameForm = "Edit Item name";
+            this.formData = {
+                id: item.id,
+                name: item.description,
+            };
+            
+            this.isModalVisible = true;
+        } else if (action === 'delete') {
+            this.confirmationDeleteItem(item);
+        }
     }
 
     onAddItemAction() {
@@ -90,7 +133,7 @@ export class CollapsePanelComponent implements OnInit {
             if(!formData.id) {
                 this.addTaskItem(this.config.id, payload);
             } else {
-                // this.editTaskItem(formData.id, payload);
+                this.editItemName(formData.id, payload);
             }
         }
     }
